@@ -1,0 +1,2 @@
+# tabulate_logging_formatter
+一种logging打印的格式，以表格的方式展示。主要解决了log打印换行对齐的问题
