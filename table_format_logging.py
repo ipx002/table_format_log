@@ -1,3 +1,9 @@
+# -*- coding:utf-8 -*-
+"""
+Time: 2026/2/14 15:56
+Author: WuJunLin
+FileName: table_format_logging.py
+"""
 import pathlib
 import logging
 import colorama
@@ -14,10 +20,12 @@ class TabulateFormatter(logging.Formatter):
         for frame in stack:
             stack_file_name = pathlib.Path(frame.filename).name
             record_file_name = pathlib.Path(record.filename).name
+            stack_func_name = frame.name
             stack_file_line = frame.lineno
             record_file_line = record.lineno
-            stack_list.append(f'{stack_file_name}:{stack_file_line}')
-            if stack_list[-1] == f'{record_file_name}:{record_file_line}':
+            record_func_name = record.funcName
+            stack_list.append(f'{stack_file_name}:{stack_func_name}:{stack_file_line}')
+            if stack_list[-1] == f'{record_file_name}:{record_func_name}:{record_file_line}':
                 break
 
         # 立刻更新上一次的堆栈
@@ -46,7 +54,7 @@ class TabulateFormatter(logging.Formatter):
         message = record.getMessage()
         stack_list = self.get_stack_list(record)
 
-        time_len, level_len, stack_len = 23, 8, 25
+        time_len, level_len, stack_len = 23, 8, 40
         level_name = self.format_len(level_name, level_len)
         stack_list = [self.format_len(each, stack_len) for each in stack_list]
         stack_str = '\n'.join(stack_list)
@@ -76,3 +84,15 @@ class ColorTabulateFormatter(TabulateFormatter):
         table_list = [self.color_map[record.levelno] + each for each in table_list]
         table = '\n'.join(table_list)
         return table
+
+
+if __name__ == '__main__':
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    console.setFormatter(ColorTabulateFormatter())
+
+    log = logging.getLogger()
+    log.setLevel(logging.DEBUG)
+    log.addHandler(console)
+
+    log.debug('debug message')
