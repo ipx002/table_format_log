@@ -86,6 +86,23 @@ class ColorTabulateFormatter(TabulateFormatter):
         return table
 
 
+def main():
+    log.debug('debug message')
+    log.info('info message')
+    log.warning('warning message')
+    log.error('error message')
+    log.critical('critical message')
+
+    log.debug('debug message\nother line debug message')
+    log.info('info message\nother line info message')
+    log.warning('warning message\nother line warning')
+    log.error('error message\nother line error')
+    log.critical('critical message\nother line critical')
+
+    for i in range(5):
+        log.debug(f'count {i} debug message')
+
+
 if __name__ == '__main__':
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
@@ -95,4 +112,4 @@ if __name__ == '__main__':
     log.setLevel(logging.DEBUG)
     log.addHandler(console)
 
-    log.debug('debug message')
+    main()
