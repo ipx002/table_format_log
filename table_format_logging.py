@@ -15,6 +15,11 @@ class TabulateFormatter(logging.Formatter):
     last_stack_list = []
 
     def get_stack_list(self, record: logging.LogRecord):
+        """
+        获取详细的调用栈信息
+        :param record:
+        :return:
+        """
         stack = traceback.extract_stack()
         stack_list = []
         for frame in stack:
@@ -26,6 +31,7 @@ class TabulateFormatter(logging.Formatter):
             record_func_name = record.funcName
             stack_list.append(f'{stack_file_name}:{stack_func_name}:{stack_file_line}')
             if stack_list[-1] == f'{record_file_name}:{record_func_name}:{record_file_line}':
+                # 调用栈到了日志记录的那一步，就可以了
                 break
 
         # 立刻更新上一次的堆栈
@@ -33,6 +39,7 @@ class TabulateFormatter(logging.Formatter):
         self.last_stack_list.clear()
         self.last_stack_list = stack_list.copy()
 
+        # 对余同一个位置连续的打印，调用堆栈可以不用这么复杂，适当简化
         stack_len = len(stack_list)
         last_stack_len = len(temp_stack_list)
         if (stack_len >= last_stack_len) and (stack_list[:last_stack_len] == temp_stack_list):
@@ -42,6 +49,12 @@ class TabulateFormatter(logging.Formatter):
 
     @staticmethod
     def format_len(input_str, target_len):
+        """
+        填充字符串的长度
+        :param input_str:
+        :param target_len:
+        :return:
+        """
         quot, mod = divmod(len(input_str), target_len)
         quot = quot + (1 if mod else 0)
         quot = quot + (0 if quot else 1)
